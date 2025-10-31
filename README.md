@@ -133,4 +133,4 @@ The script will compile `my_program.f90`, create `my_program.exe`, and run it fo
 Contributions are welcome! If you have ideas for improvements or find a bug, please open an issue or submit a pull request.
 
 ## License
-This project is licensed under the [MIT License](LICENSE.md).
+This project is licensed under the [MIT License](LICENSE).
