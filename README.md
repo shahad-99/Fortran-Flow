@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/Fortran_logo.svg" alt="Fortran Logo" width="150"/>
   <h1>PowerShell Fortran Runner for VS Code</h1>
-  <p>A powerful script to compile and run Fortran code on Windows with a single command, directly from the VS Code terminal.</p>
+  <p>A powerful set of scripts to compile and run Fortran code on Windows with a single command, directly from the VS Code terminal.</p>
 
   <p>
     <img src="https://img.shields.io/badge/Language-Fortran-734F96?style=for-the-badge&logo=fortran&logoColor=white" alt="Language Fortran">
@@ -13,13 +13,14 @@
 
 ---
 
-This script (`Run-Fortran.ps1`) automates the entire compile-and-run cycle into a single, easy-to-remember command. It automatically detects the active file in your VS Code editor, compiles it with `gfortran`, and immediately runs the resulting executable.
+This project automates the entire Fortran compile-and-run cycle into a single, easy-to-remember command (`frun`). It automatically detects the active file in your VS Code editor, compiles it with `gfortran`, and immediately runs the resulting executable, regardless of your terminal's current location.
 
 ## Features
 
--   ✅ **One-Command Execution**: Compile and run your active Fortran file with a single command.
--   🔎 **Auto-Detection**: Automatically finds the name of the file you are currently editing in VS Code.
--   🚀 **Self-Installing Alias**: The first time you run the script, it automatically creates a permanent alias `frun` for you. No manual profile editing required!
+-   ✅ **One-Command Execution**: Compile and run your active Fortran file with the single command `frun`.
+-   🔎 **Auto-Detection**: Automatically finds the `.f90`, `.f95`, etc. file you are currently editing in VS Code.
+-   📂 **Works From Anywhere**: The script automatically changes to your file's directory to compile and run, so you don't have to.
+-   🚀 **Dedicated Installer**: A one-time installer script (`Install-FortranAlias.ps1`) creates a permanent, location-aware alias. No manual profile editing required!
 -   ⚠️ **Error Checking**: Checks if compilation was successful before attempting to run the program.
 -   💬 **User-Friendly Feedback**: Provides clear status messages and error reports directly in the terminal.
 
@@ -63,31 +64,32 @@ While not required for the script to work, a good Fortran extension provides syn
 
 ## Installation & Setup
 
-Follow these steps to get the `Run-Fortran.ps1` script set up.
+This setup uses two scripts: one to install the alias (`Install-FortranAlias.ps1`) and one to perform the compilation (`Invoke-FortranRun.ps1`).
 
-### Step 1: Download the Script
-Download the `Run-Fortran.ps1` file from this repository and save it to a permanent location on your computer. A good place for scripts is `C:\Users\YourUser\Documents\PowerShell\Scripts`.
+### Step 1: Download the Scripts
+Download both `Install-FortranAlias.ps1` and `Invoke-FortranRun.ps1` and save them **in the same folder**. This folder should be a permanent location on your computer. A good place is `C:\Users\YourUser\Scripts`.
 
-### Step 2: Unblock the Script
-Windows security may block scripts downloaded from the internet. To unblock it:
-1.  Right-click the `Run-Fortran.ps1` file and select "Properties".
+### Step 2: Unblock the Scripts
+Windows security may block scripts downloaded from the internet. To unblock them:
+1.  Right-click on each script file and select "Properties".
 2.  On the "General" tab, check the "**Unblock**" box at the bottom and click "OK".
 
-Alternatively, you can run this command in PowerShell:
+Alternatively, you can run this command in PowerShell for each file:
 ```powershell
-Unblock-File -Path "C:\Path\To\Your\Script\Run-Fortran.ps1"
+Unblock-File -Path "C:\Path\To\Your\Scripts\Install-FortranAlias.ps1"
+Unblock-File -Path "C:\Path\To\Your\Scripts\Invoke-FortranRun.ps1"
 ```
 
-### Step 3: Run the Script to Create the Alias
-This is the magic step. The script will set up its own permanent alias (`frun`) for you.
+### Step 3: Run the Installer Script
+This is the magic step. The installer script will set up its own permanent alias (`frun`) for you.
 
 1.  Open PowerShell.
-2.  Navigate to the directory where you saved the script.
-3.  Run the script directly:
+2.  Navigate to the directory where you saved the scripts.
+3.  Run the **installer** script:
     ```powershell
-    .\Run-Fortran.ps1
+    .\Install-FortranAlias.ps1
     ```
-You will see a "First-time setup" message confirming that the alias has been added to your PowerShell profile. This will only happen once.
+You will see a confirmation message that the alias has been added to your PowerShell profile. This script automatically detects the correct path, so you never have to edit it manually.
 
 ### Step 4: Reload Your PowerShell Profile
 For the new `frun` alias to be available, you must reload your PowerShell profile.
@@ -99,19 +101,19 @@ For the new `frun` alias to be available, you must reload your PowerShell profil
 Your development workflow will now be incredibly simple.
 
 1.  Open your Fortran project folder in VS Code.
-2.  Open any Fortran file (e.g., `my_program.f90`) and start coding.
+2.  Open any Fortran file (e.g., `my_program.f95`) and make sure it is your **active, focused tab**.
 3.  When you're ready to test, open the integrated terminal in VS Code (**Ctrl** + **`**).
-4.  Make sure the terminal's current directory is the same as your source file's location.
-5.  Type the magic command and press Enter:
+4.  Type the magic command and press Enter:
     ```powershell
     frun
     ```
-The script will compile `my_program.f90`, create `my_program.exe`, and run it for you, all in one go.
-
-<!-- ![Demonstration GIF](https://i.imgur.com/your-demo.gif)
-*(You can replace the URL above with a link to a GIF demonstrating the workflow)* -->
+The script will find your active file, switch to its directory, compile it into an `.exe`, and run it for you, all in one go.
 
 ## Troubleshooting
+
+#### Problem: `frun : The term 'frun' is not recognized...`
+-   **Cause**: You haven't restarted your PowerShell terminal after running the installer script.
+-   **Solution**: Close and reopen your terminal. If it persists, run the `Install-FortranAlias.ps1` script again and check for any error messages.
 
 #### Problem: `gfortran : The term 'gfortran' is not recognized...`
 -   **Cause**: The compiler is not in your Windows PATH, or you haven't restarted your terminal since it was added.
@@ -125,9 +127,9 @@ The script will compile `my_program.f90`, create `my_program.exe`, and run it fo
     ```
     Answer `Y` (Yes) when prompted.
 
-#### Problem: `File 'your_file.f90' not found in the current directory.`
--   **Cause**: Your PowerShell terminal is in a different directory than your source file.
--   **Solution**: Use the `cd` command in the terminal to navigate to the folder containing your Fortran file before running `frun`.
+#### Problem: `ERROR: No active Fortran file... found in VS Code.`
+-   **Cause**: The script could not determine which file you are working on.
+-   **Solution**: Make sure the Fortran file you want to compile is the **currently active and focused tab** in your VS Code window. The script reads the window title to find the file name.
 
 ## Contributing
 Contributions are welcome! If you have ideas for improvements or find a bug, please open an issue or submit a pull request.
